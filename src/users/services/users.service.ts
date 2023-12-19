@@ -32,8 +32,7 @@ export class UserService {
   public async createUser(createUserDto: CreateUserDto): Promise<UsersEntity> {
     try {
       createUserDto.password = await this.encryptPassword(createUserDto.password);
-      const user: UsersEntity = await this.userRepository.save(createUserDto);
-      return user;
+      return await this.userRepository.save(createUserDto);
     } catch (error) {
       handlerError(error, this.logger);
     }
@@ -41,8 +40,7 @@ export class UserService {
 
   public async findOne(id: string): Promise<UsersEntity> {
     try {
-      const user: UsersEntity = await this.userRepository.findOneOrFail({ where: { id } });
-      return user;
+      return await this.userRepository.findOneOrFail({ where: { id } });
     } catch (error) {
       handlerError(error, this.logger);
     }
@@ -54,8 +52,7 @@ export class UserService {
       const user: UsersEntity = await this.findOne(id);
       const userUpdated = await this.userRepository.update(user.id, updateUserDto,);
       if (userUpdated.affected === 0) throw new BadRequestException('Usuario no actualizado.');
-      const userFind: UsersEntity = await this.findOne(id);
-      return userFind;
+      return await this.findOne(id);
     } catch (error) {
       handlerError(error, this.logger);
     }
@@ -74,8 +71,7 @@ export class UserService {
 
   public async findOneBy({ key, value, }: { key: keyof CreateUserDto; value: any; }) {
     try {
-      const user: UsersEntity = await this.userRepository.findOneOrFail({ where: { [key]: value } });
-      return user;
+      return await this.userRepository.findOneOrFail({ where: { [key]: value } });
     } catch (error) {
       handlerError(error, this.logger);
     }

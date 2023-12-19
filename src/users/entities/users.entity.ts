@@ -1,10 +1,11 @@
-import { Entity } from 'typeorm';
+import { Entity, OneToMany } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
 import { Exclude } from 'class-transformer';
 
 import { BaseEntity } from '../../common/entities/base.entity';
 import { ROLES } from '../../common/constants';
 import { IUser } from '../interfaces/user.interface';
+import { ReunionEntity } from '../../reunion/entities/reunion.entity';
 
 @Entity({ name: 'user' })
 export class UsersEntity extends BaseEntity implements IUser {
@@ -21,6 +22,13 @@ export class UsersEntity extends BaseEntity implements IUser {
   @Column()
   password: string;
 
+  @Exclude()
+  @Column({ nullable: true, name: 'token_mobile' })
+  tokenMobile: string;
+
   @Column({ type: 'enum', enum: ROLES })
   role: ROLES;
+
+  @OneToMany(() => ReunionEntity, reunion => reunion.usuario)
+  reuniones: ReunionEntity[];
 }

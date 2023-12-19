@@ -44,6 +44,14 @@ export class CreateUserDto {
   password: string;
 
   @ApiProperty({
+    example: 'FSDFDSFAF-DSFDSFDSF-DSFDSFDSF',
+    type: String,
+    description: 'Token de autenticación móvil del usuario',
+  })
+  @IsString()
+  tokenMobile?: string;
+
+  @ApiProperty({
     example: 'admin',
     enum: ROLES,
     description: 'Rol del usuario',
