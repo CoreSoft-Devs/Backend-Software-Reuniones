@@ -26,13 +26,12 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
-  const title: string = configService.get('APP_NAME');
   const url = configService.get('APP_URL');
 
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle(title)
-    .setDescription('Template para iniciar un proyecto con NestJS, TypeORM, Postgres, Swagger, Passport, JWT, Docker, etc.')
+    .setTitle("Software de Reuniones")
+    .setDescription('Software de Reuniones, desarrollado por el equipo de Coresoft')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

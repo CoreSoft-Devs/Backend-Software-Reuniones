@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ReunionService } from '../services/reunion.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
@@ -10,6 +10,8 @@ import { DeleteMessage } from 'src/common/interfaces/delete-message.interface';
 import { GetUser } from 'src/auth/decorators';
 import { ORDER, ORDER_ENUM } from 'src/common/constants';
 
+
+@ApiTags('Reuniones')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('reunion')
 export class ReunionController {

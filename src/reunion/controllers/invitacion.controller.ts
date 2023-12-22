@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { QueryDto } from 'src/common/dto/query.dto';
@@ -10,6 +10,7 @@ import { InvitacionEntity } from '../entities/invitacion.entity';
 import { CreateInvitacionDto } from '../dtos';
 import { ORDER_ENUM } from 'src/common/constants';
 
+@ApiTags('Invitaciones')
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('invitacion')
 export class InvitacionController {
