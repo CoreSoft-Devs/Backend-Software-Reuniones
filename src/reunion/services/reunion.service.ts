@@ -36,7 +36,7 @@ export class ReunionService {
             if (limit) query.take(limit);
             if (offset) query.skip(offset);
             if (order) query.orderBy('reunion.createdAt', order.toLocaleUpperCase() as any);
-            if (attr && value) query.andWhere(`reunion.${attr} LIKE :value`, { value: `%${value}%` });
+            if (attr && value) query.andWhere(`reunion.${attr} ILIKE :value`, { value: `%${value}%` });
             return await query.getMany();
         } catch (error) {
             handlerError(error, this.logger);
@@ -69,7 +69,7 @@ export class ReunionService {
             if (deletedReunion.affected === 0) throw new BadRequestException('Reunion no eliminado.');
             return { deleted: true, message: 'Reunion eliminada.' };
         } catch (error) {
-            handlerError(error, this.logger);
+            return { deleted: false, message: 'Reunion no eliminada.' };
         }
     }
 }

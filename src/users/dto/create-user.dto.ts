@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength, } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength, } from 'class-validator';
 import { ROLES } from 'src/common/constants';
 
 export class CreateUserDto {
@@ -49,6 +49,7 @@ export class CreateUserDto {
     description: 'Token de autenticación móvil del usuario',
   })
   @IsString()
+  @IsOptional()
   tokenMobile?: string;
 
   @ApiProperty({

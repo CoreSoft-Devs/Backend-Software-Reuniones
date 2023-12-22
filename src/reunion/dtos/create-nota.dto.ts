@@ -15,16 +15,6 @@ export class CreateNotaDto {
     @ApiProperty({
         example: 'ADASDADS-ASDASDASD-ASDASDASD-ASDASDASD',
         type: String,
-        description: 'ID del usuario',
-    })
-    @IsNotEmpty()
-    @IsString()
-    @IsUUID()
-    usuario: string;
-
-    @ApiProperty({
-        example: 'ADASDADS-ASDASDASD-ASDASDASD-ASDASDASD',
-        type: String,
         description: 'ID de la reunion',
     })
     @IsNotEmpty()

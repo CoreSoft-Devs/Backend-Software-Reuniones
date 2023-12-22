@@ -15,6 +15,10 @@ export const EnvConfig = () => ({
   DB_USERNAME: process.env.DB_USERNAME || 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD || 'postgres',
 
+  MAILER_EMAIL: process.env.MAILER_EMAIL || '',
+  MAILER_PASSWORD: process.env.MAILER_PASSWORD || '',
+  MAILER_SERVICE: process.env.MAILER_SERVICE || '',
+
   HASH_SALT: process.env.HASH_SALT || 10,
   JWT_AUTH: process.env.JWT_AUTH || 'secret',
   JWT_RECOVERY: process.env.JWT_RECOVERY || 'secret',

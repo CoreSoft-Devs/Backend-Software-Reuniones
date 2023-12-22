@@ -17,6 +17,13 @@ export const configValidationSchema = Joi.object({
   DB_USERNAME: Joi.string().default('postgres'),
   DB_PASSWORD: Joi.string().default(''),
 
+  MAILER_EMAIL: Joi.string().default(''),
+  MAILER_SECRET_KEY: Joi.string().default(''),
+  MAILER_SERVICE: Joi.string().default(''),
+
+  FIREBASE_AUTHORIZATION: Joi.string().default(''),
+  FIREBASE_URL: Joi.string().default(''),
+
   HASH_SALT: Joi.number().default(10),
   JWT_AUTH: Joi.string().default('secret'),
   JWT_RECOVERY: Joi.string().default('secret'),

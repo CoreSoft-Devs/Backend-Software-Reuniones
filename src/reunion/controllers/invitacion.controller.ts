@@ -1,50 +1,56 @@
-/* import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiParam, ApiQuery } from '@nestjs/swagger';
 
-import { ExampleService } from '../services/example.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
-import { CreateExampleDto } from '../dto/create-example.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
-import { UpdateExampleDto } from '../dto/update-example.dto';
-import { ExampleEntity } from '../entities/example.entity';
 import { DeleteMessage } from 'src/common/interfaces/delete-message.interface';
-import { RolesAccess } from 'src/auth/decorators';
+import { GetUser } from 'src/auth/decorators';
+import { InvitacionService } from '../services/invitacion.service';
+import { InvitacionEntity } from '../entities/invitacion.entity';
+import { CreateInvitacionDto } from '../dtos';
+import { ORDER_ENUM } from 'src/common/constants';
 
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('invitacion')
 export class InvitacionController {
 
-  constructor(private readonly exampleService: ExampleService) { }
+  constructor(private readonly invitacionService: InvitacionService) { }
 
   @Post()
-  create(@Body() createExampleDto: CreateExampleDto): Promise<ExampleEntity> {
-    return this.exampleService.create(createExampleDto);
+  create(
+    @Body() createInvitacionDto: CreateInvitacionDto,
+    @GetUser('id') userId: string,
+  ): Promise<InvitacionEntity> {
+    return this.invitacionService.create(createInvitacionDto, userId);
   }
 
   @ApiQuery({ name: 'limit', type: 'number', required: false })
   @ApiQuery({ name: 'offset', type: 'number', required: false })
-  @Get()
-  findAll(@Query() queryDto: QueryDto): Promise<ExampleEntity[]> {
-    return this.exampleService.findAll(queryDto);
+  @ApiQuery({ name: 'order', enum: ORDER_ENUM, required: false })
+  @ApiQuery({ name: 'attr', type: 'string', required: false })
+  @ApiQuery({ name: 'value', type: 'string', required: false })
+  @ApiParam({ name: 'reunionId', type: 'string', required: true })
+  @Get(':reunionId')
+  findAll(
+    @Query() queryDto: QueryDto,
+    @Param('reunionId', ParseUUIDPipe) reunionId: string
+  ): Promise<InvitacionEntity[]> {
+    return this.invitacionService.findAll(queryDto, reunionId);
   }
 
-  @ApiParam({ name: 'id', type: 'string' })
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<ExampleEntity> {
-    return this.exampleService.findOne(id);
+  @ApiParam({ name: 'reunionId', type: 'string', required: true })
+  @ApiParam({ name: 'usuarioId', type: 'string', required: true })
+  @Patch(':reunionId/:usuarioId')
+  update(
+    @Param('reunionId', ParseUUIDPipe) reunionId: string,
+    @Param('usuarioId', ParseUUIDPipe) usuarioId: string,
+  ): Promise<InvitacionEntity> {
+    return this.invitacionService.update(reunionId, usuarioId);
   }
 
-  @ApiParam({ name: 'id', type: 'string' })
-  @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateExampleDto: UpdateExampleDto): Promise<ExampleEntity> {
-    return this.exampleService.update(id, updateExampleDto);
-  }
-
-  @RolesAccess('ADMIN')
   @ApiParam({ name: 'id', type: 'string' })
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteMessage> {
-    return this.exampleService.remove(id);
+    return this.invitacionService.remove(id);
   }
 }
- */

@@ -14,6 +14,13 @@ declare namespace NodeJS {
     DB_USERNAME: string;
     DB_PASSWORD: string;
 
+    MAILER_EMAIL: string;
+    MAILER_SECRET_KEY: string;
+    MAILER_SERVICE: string;
+
+    FIREBASE_AUTHORIZATION: string;
+    FIREBASE_URL: string;
+    
     HASH_SALT: number;
     JWT_AUTH: string;
     JWT_RECOVERY: string;

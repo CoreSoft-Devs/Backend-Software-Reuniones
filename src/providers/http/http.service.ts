@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class HttpCustomService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) { }
 
   public async apiGetAll(url: string): Promise<any> {
     try {
@@ -14,4 +14,14 @@ export class HttpCustomService {
       throw new InternalServerErrorException('Error al obtener los datos');
     }
   }
+
+  public async apiPost(url: string, data: any, header: any): Promise<any> {
+    try {
+      const response = await firstValueFrom(this.httpService.post(url, data, header));
+      return response.data;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al obtener los datos');
+    }
+  }
+
 }

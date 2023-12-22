@@ -27,6 +27,8 @@ export class ReunionController {
   @ApiQuery({ name: 'limit', type: 'number', required: false })
   @ApiQuery({ name: 'offset', type: 'number', required: false })
   @ApiQuery({ name: 'order', enum: ORDER_ENUM, required: false })
+  @ApiQuery({ name: 'attr', type: 'string', required: false })
+  @ApiQuery({ name: 'value', type: 'string', required: false })
   @Get()
   findAll(
     @Query() queryDto: QueryDto,
