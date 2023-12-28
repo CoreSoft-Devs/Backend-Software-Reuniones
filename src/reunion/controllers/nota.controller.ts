@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { QueryDto } from 'src/common/dto/query.dto';
@@ -11,6 +11,7 @@ import { GetUser } from 'src/auth/decorators';
 import { ORDER_ENUM } from 'src/common/constants';
 
 @ApiTags('Notas')
+@ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('nota')
 export class NotaController {

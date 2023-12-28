@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Delete, Param, UseGuards, ParseUUIDPipe, Query, Patch, } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger/dist';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger/dist';
 
 import { RolesAccess } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
@@ -11,6 +11,7 @@ import { QueryDto } from 'src/common/dto/query.dto';
 import { DeleteMessage } from 'src/common/interfaces/delete-message.interface';
 
 @ApiTags('Users')
+@ApiBearerAuth()
 @Controller('user')
 @UseGuards(AuthGuard, RolesGuard)
 export class UsersController {
