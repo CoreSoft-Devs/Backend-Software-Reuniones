@@ -34,9 +34,9 @@ export class InvitacionService {
             const { estado = EstadoInvitacion.PENDIENTE } = createInvitacionDto;
             const hora: string = new Date().toLocaleTimeString();
             const fecha: string = new Date().toLocaleDateString();
-            const usuario: UsersEntity = await this.userService.findOne(createInvitacionDto.usuario);
+            const usuario: UsersEntity = await this.userService.findOneBy({ key: 'email', value: createInvitacionDto.email });
             const reunion: ReunionEntity = await this.reunionService.findOne(createInvitacionDto.reunion, userId);
-            if (this.existInvitacion(usuario.id, reunion.id)) throw new BadRequestException('Ya se ha enviado una invitacion a este usuario.');
+            if (await this.existInvitacion(usuario.id, reunion.id)) throw new BadRequestException('Ya se ha enviado una invitacion a este usuario.');
             const invitacion: InvitacionEntity = await this.invitacionRepository.save({ estado, reunion, usuario, hora, fecha });
             this.sendEmail(usuario, reunion);
             this.sendNotification(usuario, reunion);
@@ -78,7 +78,7 @@ export class InvitacionService {
     private async existInvitacion(userID: string, reunionId: string): Promise<boolean> {
         try {
             const invitacion = await this.invitacionRepository.findOne({ where: { usuario: { id: userID }, reunion: { id: reunionId } } });
-            return !!invitacion;
+            return invitacion ? true : false;
         } catch (error) {
             handlerError(error, this.logger);
         }
