@@ -36,7 +36,11 @@ export class ReunionService {
             if (limit) query.take(limit);
             if (offset) query.skip(offset);
             if (order) query.orderBy('reunion.createdAt', order.toLocaleUpperCase() as any);
-            if (attr && value) query.andWhere(`reunion.${attr} ILIKE :value`, { value: `%${value}%` });
+            if (attr && value) {
+                if (attr === 'usuario') query.andWhere(`usuario.nombre ILIKE :value OR usuario.apellido ILIKE :value`, { value: `%${value}%` });
+                else if (attr === 'fecha') query.andWhere(`reunion.fechaInicio = :value OR reunion.fechaFinal = :value`, { value });
+                else query.andWhere(`reunion.${attr} ILIKE :value`, { value: `%${value}%` });
+            }
             return await query.getMany();
         } catch (error) {
             handlerError(error, this.logger);
