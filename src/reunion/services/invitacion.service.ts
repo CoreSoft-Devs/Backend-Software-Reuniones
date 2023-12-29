@@ -84,13 +84,13 @@ export class InvitacionService {
         }
     }
 
-    public async update(id: string, userInvitadoId: string): Promise<InvitacionEntity> {
+    public async update(reunionId: string, userInvitadoId: string): Promise<InvitacionEntity> {
         try {
-            const invitacion: InvitacionEntity = await this.invitacionRepository.findOneOrFail({ where: { id, usuario: { id: userInvitadoId } }, relations: ['usuario'] });
+            const invitacion: InvitacionEntity = await this.invitacionRepository.findOneOrFail({ where: { usuario: { id: userInvitadoId }, reunion: { id: reunionId } }, relations: ['usuario', 'reunion'] });
             if (invitacion.estado === EstadoInvitacion.ACEPTADO) throw new BadRequestException('Invitacion ya aceptada.');
             const invitacionUpdated = await this.invitacionRepository.update(invitacion.id, { estado: EstadoInvitacion.ACEPTADO });
             if (invitacionUpdated.affected === 0) throw new BadRequestException('Invitacion no actualizada.');
-            return await this.findOne(id);
+            return await this.findOne(invitacion.id);
         } catch (error) {
             handlerError(error, this.logger);
         }
