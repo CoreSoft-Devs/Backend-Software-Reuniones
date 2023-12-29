@@ -21,8 +21,7 @@ export class InvitacionService {
     private readonly logger = new Logger('InvitacionService');
 
     constructor(
-        @InjectRepository(InvitacionEntity)
-        private readonly invitacionRepository: Repository<InvitacionEntity>,
+        @InjectRepository(InvitacionEntity) private readonly invitacionRepository: Repository<InvitacionEntity>,
         private readonly reunionService: ReunionService,
         private readonly userService: UserService,
         private readonly emailService: EmailService,
@@ -51,6 +50,7 @@ export class InvitacionService {
             const { limit, offset, order, attr, value } = queryDto;
             const query = this.invitacionRepository.createQueryBuilder('invitacion');
             query.leftJoinAndSelect('invitacion.usuario', 'usuario');
+            query.leftJoinAndSelect('invitacion.reunion', 'reunion');
             query.where('invitacion.reunion = :reunionId', { reunionId });
             if (limit) query.take(limit);
             if (offset) query.skip(offset);
@@ -74,6 +74,8 @@ export class InvitacionService {
             handlerError(error, this.logger);
         }
     }
+
+
 
     private async existInvitacion(userID: string, reunionId: string): Promise<boolean> {
         try {

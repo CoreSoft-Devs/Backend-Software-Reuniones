@@ -9,6 +9,8 @@ import { handlerError } from 'src/common/utils/handlerError.utils';
 import { DeleteMessage } from 'src/common/interfaces/delete-message.interface';
 import { UserService } from 'src/users/services/users.service';
 import { UsersEntity } from 'src/users/entities/users.entity';
+import { InvitacionEntity } from '../entities/invitacion.entity';
+import { EstadoInvitacion } from 'src/common/constants';
 
 @Injectable()
 export class ReunionService {
@@ -16,7 +18,8 @@ export class ReunionService {
 
     constructor(
         @InjectRepository(ReunionEntity) private readonly reunionRepository: Repository<ReunionEntity>,
-        private readonly userService: UserService,
+        @InjectRepository(InvitacionEntity) private readonly invitacionRepository: Repository<InvitacionEntity>,
+        private readonly userService: UserService
     ) { }
 
     public async create(createReunionDto: CreateReunionDto, userId: string): Promise<ReunionEntity> {
@@ -28,7 +31,7 @@ export class ReunionService {
         }
     }
 
-    public async findAll(queryDto: QueryDto, userId: string): Promise<ReunionEntity[]> {
+    public async findAllCreate(queryDto: QueryDto, userId: string): Promise<ReunionEntity[]> {
         try {
             const { limit, offset, order, attr, value } = queryDto;
             const query = this.reunionRepository.createQueryBuilder('reunion');
@@ -42,6 +45,17 @@ export class ReunionService {
                 else query.andWhere(`reunion.${attr} ILIKE :value`, { value: `%${value}%` });
             }
             return await query.getMany();
+        } catch (error) {
+            handlerError(error, this.logger);
+        }
+    }
+
+
+    public async findAll(queryDto: QueryDto, userId: string): Promise<ReunionEntity[]> {
+        try {
+            const reunionesCreadas = await this.findAllCreate(queryDto, userId);
+            const reunionesInvitado = await this.getReunionesInvitado(queryDto, userId);
+            return [...reunionesCreadas, ...reunionesInvitado];
         } catch (error) {
             handlerError(error, this.logger);
         }
@@ -74,6 +88,29 @@ export class ReunionService {
             return { deleted: true, message: 'Reunion eliminada.' };
         } catch (error) {
             return { deleted: false, message: 'Reunion no eliminada.' };
+        }
+    }
+
+    public async getReunionesInvitado(queryDto: QueryDto, userID: string): Promise<ReunionEntity[]> {
+        try {
+            const { limit, offset, order, attr, value } = queryDto;
+            const query = this.invitacionRepository.createQueryBuilder('invitacion');
+            query.leftJoinAndSelect('invitacion.reunion', 'reunion');
+            query.where('invitacion.usuario = :userID', { userID });
+            query.andWhere('invitacion.estado = :estado', { estado: EstadoInvitacion.ACEPTADO });
+            if (limit) query.take(limit);
+            if (offset) query.skip(offset);
+            if (order) query.orderBy('invitacion.createdAt', order.toLocaleUpperCase() as any);
+            if (attr && value) {
+                if (attr === 'usuario') query.andWhere(`usuario.nombre ILIKE :value`, { value: `%${value}%` });
+                if (attr === 'estado') query.andWhere(`invitacion.${attr} = :value`, { value });
+                if (attr === 'fecha')
+                    query.andWhere(`invitacion.${attr}::text ILIKE :value`, { value: `%${value}%` });
+            }
+            const invitaciones = await query.getMany();
+            return invitaciones.map(invitacion => invitacion.reunion);
+        } catch (error) {
+            handlerError(error, this.logger);
         }
     }
 }

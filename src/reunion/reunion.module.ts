@@ -18,5 +18,6 @@ import { NotaService } from './services/nota.service';
   ],
   controllers: [ReunionController, InvitacionController, NotaController],
   providers: [ReunionService, InvitacionService, NotaService],
+  exports: [ReunionService, InvitacionService, NotaService]
 })
 export class ReunionModule { }
